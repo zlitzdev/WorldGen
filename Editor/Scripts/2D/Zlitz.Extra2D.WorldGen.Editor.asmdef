@@ -1,0 +1,18 @@
+{
+    "name": "Zlitz.Extra2D.WorldGen.Editor",
+    "rootNamespace": "Zlitz.Extra2D.WorldGen",
+    "references": [
+        "GUID:281d75c44775b2a43b1ec7c4aebb9b28"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

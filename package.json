@@ -1,0 +1,21 @@
+{
+	"name": "com.zlitz.worldgen",
+	"displayName": "Zlitz's World Gen",
+	"author": "ZlitzGames",
+	"version": "1.0.0",
+	"unity": "2022.3",
+	"description": "Things related to procedural generation and world building for 2D/3D.",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/zlitzdev/WorldGen.git"
+	},
+	"keywords": [
+		"utility",
+		"procedural_generation",
+		"procedural",
+		"tilemap"
+	],
+	"samples": [
+	]
+}

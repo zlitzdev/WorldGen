@@ -1,0 +1,14 @@
+{
+    "name": "Zlitz.Extra2D.WorldGen.Runtime",
+    "rootNamespace": "Zlitz.Extra2D.WorldGen",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
