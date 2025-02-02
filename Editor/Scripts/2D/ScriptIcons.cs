@@ -3,6 +3,7 @@ using System.Reflection;
 
 using UnityEngine;
 using UnityEditor;
+using System.Collections;
 
 namespace Zlitz.Extra2D.WorldGen
 {
@@ -16,7 +17,12 @@ namespace Zlitz.Extra2D.WorldGen
         private static Texture2D s_tilemapModuleIcon;
         private static Texture2D s_tilemapModulePlaceInstructionIcon;
 
+        private static MethodInfo s_getAnnotationsMethod;
+        private static MethodInfo s_setGizmoEnabledMethod;
         private static MethodInfo s_setIconEnabledMethod;
+
+        private static PropertyInfo s_classIdProperty;
+        private static PropertyInfo s_scriptClassProperty;
 
         static ScriptIcons()
         {
@@ -99,16 +105,52 @@ namespace Zlitz.Extra2D.WorldGen
         {
             if (s_tilemapModuleIcon == null)
             {
-                s_setIconEnabledMethod = Assembly.GetAssembly(typeof(Editor))?.GetType("UnityEditor.AnnotationUtility")?.GetMethod("SetIconEnabled", BindingFlags.Static | BindingFlags.NonPublic);
+                Type annotationType        = Type.GetType("UnityEditor.Annotation, UnityEditor");
+                Type annotationUtilityType = Type.GetType("UnityEditor.AnnotationUtility, UnityEditor");
+
+                if (annotationUtilityType != null && annotationType != null)
+                {
+                    s_getAnnotationsMethod  = annotationUtilityType.GetMethod("GetAnnotations", BindingFlags.Static | BindingFlags.NonPublic);
+                    s_setGizmoEnabledMethod = annotationUtilityType.GetMethod("SetGizmoEnabled", BindingFlags.Static | BindingFlags.NonPublic);
+                    s_setIconEnabledMethod  = annotationUtilityType.GetMethod("SetIconEnabled", BindingFlags.Static | BindingFlags.NonPublic);
+
+                    s_classIdProperty     = annotationType.GetProperty("classID", BindingFlags.Public | BindingFlags.Instance);
+                    s_scriptClassProperty = annotationType.GetProperty("scriptClass", BindingFlags.Public | BindingFlags.Instance);
+                }
             }
 
-            if (s_setIconEnabledMethod == null)
+            if (s_getAnnotationsMethod == null || s_classIdProperty == null || s_scriptClassProperty == null)
             {
                 return;
             }
 
-            const int MONO_BEHAVIOR_CLASS_ID = 114;
-            s_setIconEnabledMethod.Invoke(null, new object[] { MONO_BEHAVIOR_CLASS_ID, type.Name, on ? 1 : 0 });
+            IEnumerable annotations = (IEnumerable)s_getAnnotationsMethod.Invoke(null, null);
+            if (annotations == null)
+            {
+                return;
+            }
+
+            foreach (object annotation in annotations)
+            {
+                int    classId     = (int)s_classIdProperty.GetValue(annotation, null);
+                string scriptClass = (string)s_scriptClassProperty.GetValue(annotation, null);
+            
+                if (scriptClass == type.Name)
+                {
+                    s_setGizmoEnabledMethod?.Invoke(null, new object[] 
+                    {
+                        classId,
+                        scriptClass,
+                        on ? 1 : 0
+                    });
+                    s_setIconEnabledMethod?.Invoke(null, new object[]
+                    {
+                        classId,
+                        scriptClass,
+                        on ? 1 : 0
+                    });
+                }
+            }
         }
     }
 }
