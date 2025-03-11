@@ -1,9 +1,10 @@
 using System;
+using System.Linq;
 using System.Reflection;
+using System.Collections;
 
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 
 namespace Zlitz.Extra2D.WorldGen
 {
@@ -45,10 +46,7 @@ namespace Zlitz.Extra2D.WorldGen
 
                         if (s_tilemapModuleIcon != null)
                         {
-                            GameObject temp = new GameObject();
-                            MonoBehaviour component = temp.AddComponent(type) as MonoBehaviour;
-
-                            MonoScript monoScript = MonoScript.FromMonoBehaviour(component);
+                            MonoScript monoScript = MonoImporter.GetAllRuntimeMonoScripts().FirstOrDefault(script => script.GetClass() == type);
                             if (monoScript != null)
                             {
                                 MonoImporter monoImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(monoScript)) as MonoImporter;
@@ -62,8 +60,6 @@ namespace Zlitz.Extra2D.WorldGen
                                     }
                                 }
                             }
-
-                            GameObject.DestroyImmediate(temp);
                         }
                     }
 
@@ -76,10 +72,7 @@ namespace Zlitz.Extra2D.WorldGen
 
                         if (s_tilemapModulePlaceInstructionIcon != null)
                         {
-                            GameObject temp = new GameObject();
-                            MonoBehaviour component = temp.AddComponent(type) as MonoBehaviour;
-
-                            MonoScript monoScript = MonoScript.FromMonoBehaviour(component);
+                            MonoScript monoScript = MonoImporter.GetAllRuntimeMonoScripts().FirstOrDefault(script => script.GetClass() == type);
                             if (monoScript != null)
                             {
                                 MonoImporter monoImporter = AssetImporter.GetAtPath(AssetDatabase.GetAssetPath(monoScript)) as MonoImporter;
@@ -93,8 +86,6 @@ namespace Zlitz.Extra2D.WorldGen
                                     }
                                 }
                             }
-
-                            GameObject.DestroyImmediate(temp);
                         }
                     }
                 }
@@ -103,7 +94,7 @@ namespace Zlitz.Extra2D.WorldGen
     
         private static void SetGizmoIconEnabled(Type type, bool on)
         {
-            if (s_tilemapModuleIcon == null)
+            if (s_getAnnotationsMethod == null || s_classIdProperty == null || s_scriptClassProperty == null)
             {
                 Type annotationType        = Type.GetType("UnityEditor.Annotation, UnityEditor");
                 Type annotationUtilityType = Type.GetType("UnityEditor.AnnotationUtility, UnityEditor");
